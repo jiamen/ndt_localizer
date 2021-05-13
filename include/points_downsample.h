@@ -12,15 +12,15 @@ static pcl::PointCloud<pcl::PointXYZ> removePointByRange(pcl::PointCloud<pcl::Po
     narrowed_scan.header = scan.header;
 
 #if 1     //  This error handling should be detemind.
-    if (min_range>=max_range)
+    if (min_range >= max_range)
     {
         ROS_ERROR_ONCE("min_range>=max_range @");
         return scan;
     }
 #endif
 
-    double square_min_range = min_range * min_range;
-    double square_max_range = max_range * max_range;
+    double square_min_range = min_range * min_range;        // 最小平方距离
+    double square_max_range = max_range * max_range;        // 最大平方距离
 
     for (pcl::PointCloud<pcl::PointXYZ>::const_iterator iter = scan.begin(); iter != scan.end(); ++ iter)
     {
@@ -29,9 +29,10 @@ static pcl::PointCloud<pcl::PointXYZ> removePointByRange(pcl::PointCloud<pcl::Po
         // p.y = iter->y;
         // p.z = iter->z;
         // p.intensity = iter->intensity;
-        double square_distance = p.x * p.x + p.y * p.y;
 
-        if (square_min_range<=square_distance && square_distance<=square_max_range)
+        // 用来过滤距离车辆较近以及较远的点云数据
+        double square_distance = p.x * p.x + p.y * p.y;
+        if (square_min_range <= square_distance && square_distance <= square_max_range)
         {
             narrowed_scan.points.push_back(p);
         }

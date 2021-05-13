@@ -67,10 +67,10 @@ private:
 
     Eigen::Matrix4f base_to_sensor_matrix_;
     Eigen::Matrix4f pre_trans_, delta_trans_;
-    bool init_pose = false;
+    bool init_pose_ = false;
 
-    std::string base_frame_;
-    std::string map_frame_;
+    std::string base_frame_;        // 车辆坐标系
+    std::string map_frame_;         // 地图帧坐标系
 
     // init guess for ndt     ndt配准需要提供的初始位姿
     geometry_msgs::PoseWithCovarianceStamped initial_pose_cov_msg_;
@@ -85,19 +85,19 @@ private:
     void init_params();
     void timer_diagnostic();
 
-    bool get_transform(const std::string & target_frame,
-                       const std::string & source_frame,
-                       const geometry_msgs::TransformStamped::Ptr & transform_stamped_ptr,
-                       const ros::Time & time_stamp);
-    bool get_transform(const std::string & target_frame,
-                       const std::string & source_frame,
-                       const geometry_msgs::TransformStamped::Ptr & transform_stamped_ptr);
-    void publish_tf(const std::string & frame_id, const std::string & child_frame_id,
-                    const geometry_msgs::PoseStamped & pose_msg);
+    bool get_transform(const std::string& target_frame,
+                       const std::string& source_frame,
+                       const geometry_msgs::TransformStamped::Ptr& transform_stamped_ptr,
+                       const ros::Time& time_stamp);
+    bool get_transform(const std::string& target_frame,
+                       const std::string& source_frame,
+                       const geometry_msgs::TransformStamped::Ptr& transform_stamped_ptr);
+    void publish_tf(const std::string& frame_id, const std::string& child_frame_id,
+                    const geometry_msgs::PoseStamped& pose_msg);
 
-    void callback_pointsmap(const sensor_msgs::PointCloud2::ConstPtr& pointcloud2_msg_ptr);
-    void callback_init_pose(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose_conv_msg_ptr);
-    void callback_pointcloud(const sensor_msgs::PointCloud2::ConstPtr& pointcloud2_msg_ptr);
+    void callback_pointsmap(const sensor_msgs::PointCloud2::ConstPtr& map_points_msg_ptr);
+    void callback_init_pose(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& initial_pose_msg_ptr);
+    void callback_pointcloud(const sensor_msgs::PointCloud2::ConstPtr& sensor_points_sensorTF_msg_ptr);
 
 };
 
