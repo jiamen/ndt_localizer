@@ -159,7 +159,7 @@ void NdtLocalizer::callback_pointcloud(const sensor_msgs::PointCloud2::ConstPtr&
     boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> sensor_points_sensorTF_ptr(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(*sensor_points_sensorTF_msg_ptr, *sensor_points_sensorTF_ptr);
 
-    // 变换矩阵：get TF base to sensor，上述点云是在激光雷达坐标系下，下面将数据投射到base_link坐标系下
+    // 变换矩阵：get TF base to sensor，上述点云是在base_link坐标系下，下面将数据投射到激光雷达坐标系下
     geometry_msgs::TransformStamped::Ptr TF_base_to_sensor_ptr(new geometry_msgs::TransformStamped);
     get_transform(base_frame_, sensor_frame, TF_base_to_sensor_ptr);
 
@@ -167,7 +167,7 @@ void NdtLocalizer::callback_pointcloud(const sensor_msgs::PointCloud2::ConstPtr&
     const Eigen::Affine3d base_to_sensor_affine = tf2::transformToEigen(*TF_base_to_sensor_ptr);
     const Eigen::Matrix4f base_to_sensor_matrix = base_to_sensor_affine.matrix().cast<float>();
 
-    // 用上面的Eigen变换矩阵，将传感器坐标系下的点云数据(ouster)转换到车辆基础坐标系(base_link)下
+    // 用上面的Eigen变换矩阵，将车辆基础坐标系(base_link)转换到传感器坐标系下的点云数据(ouster)下
     boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> sensor_points_baselinkTF_ptr(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::transformPointCloud(*sensor_points_sensorTF_ptr, *sensor_points_baselinkTF_ptr, base_to_sensor_matrix);
 
